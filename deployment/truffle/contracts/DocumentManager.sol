@@ -47,7 +47,8 @@ contract DocumentManager {
         string newName
     );
     event DocumentSignersUpdated(bytes32 indexed _hash, address[] _signers);
-    event DocumentSent(bytes32 indexed _hash, address[] indexed _signers);
+    event DocumentSent(bytes32 indexed _hash, address[] _signers);
+    event DocumentSentToSigner(bytes32 _hash, address indexed _signer);
     event DocumentRequiresSignature(bytes32 _hash, address indexed _signer);
 
     mapping(bytes32 => Document) documents;
@@ -120,6 +121,7 @@ contract DocumentManager {
             documents[_hash].signed[
                 documents[_hash].signers[i]
             ] = SignatureStatus.AWAITING;
+            emit DocumentSentToSigner(_hash, documents[_hash].signers[i]);
         }
         emit DocumentSent(_hash, documents[_hash].signers);
     }
