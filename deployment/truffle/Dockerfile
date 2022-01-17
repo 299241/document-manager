@@ -2,7 +2,7 @@ FROM node:14
 
 WORKDIR /truffle
 
-RUN npm install -g truffle@5.4.0
+RUN npm install -g truffle
 RUN npm config set bin-links false
 
 COPY contracts ./contracts
