@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  ganache:
+    container_name: ganache-cli
+    build: ./deployment/ganache
+    ports:
+      - "8545:8545"
+  truffle:
+    container_name: truffle
+    build: ./deployment/truffle
+    volumes:
+      - ./deployment/truffle/build:/truffle/output/contracts
+    depends_on:
+      - ganache
+  ipfs:
+    container_name: ipfs
+    image: ipfs/go-ipfs:latest
+    environment:
+      - IPFS_PROFILE=server
+      - IPFS_PATH=/ipfsdata
+    volumes:
+      - ./data/ipfs:/ipfsdata
+    ports:
+      - "4001:4001"
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:5001:5001"
