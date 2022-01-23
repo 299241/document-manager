@@ -87,6 +87,7 @@ contract DocumentManager {
         external
         onlyTracked(_hash)
         onlyAuthor(_hash, msg.sender)
+        onlyEditable(_hash)
     {
         require(bytes(_newName).length > 0, "empty_new_name");
         string memory oldName = documents[_hash].name;
