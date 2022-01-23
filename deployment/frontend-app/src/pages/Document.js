@@ -245,7 +245,7 @@ export default function Document() {
               <Typography variant="h4" gutterBottom>
                 {document[4]}
               </Typography>
-              {isAuthor && (
+              {isAuthor && document[6] === '0' && (
                 <IconButton onClick={() => setNameFormDialogOpened(true)}>
                   <Icon icon={editIcon} />
                 </IconButton>
