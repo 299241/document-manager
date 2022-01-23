@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 // material
@@ -7,6 +9,7 @@ import { Box, Button, Typography, Container, Card, CardContent, Stack } from '@m
 import { MotionContainer, varBounceIn } from '../components/animate';
 import Page from '../components/Page';
 import authActions from '../redux/actions/auth.actions';
+import usePrevious from '../utils/hooks/usePrevious';
 
 // ----------------------------------------------------------------------
 
@@ -22,15 +25,31 @@ const RootStyle = styled(Page)(({ theme }) => ({
 
 export default function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const userAccountRequestStatus = useSelector((state) => state.authStore.userAccountRequestStatus);
   const userAccountRequestError = useSelector((state) => state.authStore.userAccountRequestError);
 
   const isAccountPending = userAccountRequestStatus === 'pending';
   const isNoProvider = userAccountRequestError === 'no_provider';
 
+  const prevState = usePrevious({
+    userAccountRequestStatus
+  });
+
   const handleMetaMask = () => {
     dispatch(authActions.getUserAccount());
   };
+
+  useEffect(() => {
+    if (
+      prevState?.userAccountRequestStatus === 'pending' &&
+      userAccountRequestStatus === 'success'
+    ) {
+      navigate('/dashboard');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userAccountRequestStatus]);
 
   return (
     <RootStyle title="Login">
