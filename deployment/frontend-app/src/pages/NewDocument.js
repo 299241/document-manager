@@ -64,6 +64,7 @@ export default function NewDocument() {
     );
   };
 
+  const [firstRender, setFirstRender] = useState(false);
   const [step, setStep] = useState(0);
   const [documentName, setDocumentName] = useState('');
   const [documentFiles, setDocumentFiles] = useState([]);
@@ -88,24 +89,29 @@ export default function NewDocument() {
 
   useEffect(() => {
     dispatch(filesActions.clearFilesStore());
+    setFirstRender(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (uploadFilesRequestStatus === 'success') {
-      createDocument();
-    } else if (uploadFilesRequestStatus === 'error') {
-      navigate(`/dashbord`, { replace: true });
+    if (firstRender) {
+      if (uploadFilesRequestStatus === 'success') {
+        createDocument();
+      } else if (uploadFilesRequestStatus === 'error') {
+        navigate(`/dashbord`, { replace: true });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploadFilesRequestStatus]);
 
   useEffect(() => {
-    if (createDocumentRequestStatus === 'success') {
-      navigate(`/document/${documentHash}`, { replace: true });
-    } else if (createDocumentRequestStatus === 'error') {
-      alert('Error: unable to add document to blockchain!');
-      navigate(`/dashbord`, { replace: true });
+    if (firstRender) {
+      if (createDocumentRequestStatus === 'success') {
+        navigate(`/document/${documentHash}`, { replace: true });
+      } else if (createDocumentRequestStatus === 'error') {
+        alert('Error: unable to add document to blockchain!');
+        navigate(`/dashbord`, { replace: true });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createDocumentRequestStatus, navigate]);
@@ -143,8 +149,8 @@ export default function NewDocument() {
             onFileDelete={(deleteIndex) =>
               setDocumentFiles(documentFiles.filter((item, index) => index !== deleteIndex))
             }
-            onListAccepted={(password) => {
-              setPassword(password);
+            onListAccepted={(params) => {
+              setPassword(params.password);
               setStep(3);
             }}
           />
